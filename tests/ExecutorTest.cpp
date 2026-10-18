@@ -102,4 +102,13 @@ TEST(ExecutorTest, should_return_facing_E_given_command_is_L_and_facing_is_S)
     EXPECT_EQ('E', pose.heading);
 }
 
+// ================= 右转指令测试 =================
+TEST(ExecutorTest, should_return_facing_S_given_command_is_R_and_facing_is_E)
+{
+    std::unique_ptr<Executor> executor(Executor::NewExecutor({0, 0, 'E'}));
+    executor->Execute("R");
+    Pose pose = executor->Query();
+    EXPECT_EQ('S', pose.heading);
+}
+
 }  // namespace adas
