@@ -66,4 +66,16 @@ TEST(ExecutorTest, should_return_y_minus_1_given_command_is_M_and_facing_is_S)
     ASSERT_EQ(target, executor->Query());
 }
 
+// ================= 左转指令测试 =================
+TEST(ExecutorTest, should_return_facing_N_given_command_is_L_and_facing_is_E)
+{
+    // Given: 初始位置为 (0,0)，朝向为东(E)
+    std::unique_ptr<Executor> executor(Executor::NewExecutor({0, 0, 'E'}));
+    // When: 执行左转指令
+    executor->Execute("L");
+    // Then: 期望朝向变为北(N)
+    Pose pose = executor->Query();
+    EXPECT_EQ('N', pose.heading);
+}
+
 }  // namespace adas
