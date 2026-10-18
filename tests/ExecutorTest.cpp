@@ -111,6 +111,14 @@ TEST(ExecutorTest, should_return_facing_S_given_command_is_R_and_facing_is_E)
     EXPECT_EQ('S', pose.heading);
 }
 
+TEST(ExecutorTest, should_return_facing_W_given_command_is_R_and_facing_is_S)
+{
+    std::unique_ptr<Executor> executor(Executor::NewExecutor({0, 0, 'S'}));
+    executor->Execute("R");
+    Pose pose = executor->Query();
+    EXPECT_EQ('W', pose.heading);
+}
+
 TEST(ExecutorTest, should_return_facing_N_given_command_is_R_and_facing_is_W)
 {
     std::unique_ptr<Executor> executor(Executor::NewExecutor({0, 0, 'W'}));
