@@ -17,6 +17,12 @@ public:
     Pose Query(void) const noexcept override;
 
 private:
+    // === 新增：私有辅助函数，使 Execute 更加清晰 ===
+    void TurnLeft() noexcept;
+    void TurnRight() noexcept;
+    // ==========================================
+
+private:
     Pose pose;
 };
 }  // namespace adas
