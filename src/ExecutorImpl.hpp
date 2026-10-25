@@ -17,7 +17,8 @@ public:
     Pose Query(void) const noexcept override;
 
 private:
-    // === 新增：私有辅助函数，使 Execute 更加清晰 ===
+    // 指令行为抽取
+    void Move() noexcept;
     void TurnLeft() noexcept;
     void TurnRight() noexcept;
     // ==========================================
