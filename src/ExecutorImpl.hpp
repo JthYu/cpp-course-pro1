@@ -1,4 +1,6 @@
 #pragma once
+#include <memory>
+
 #include "Executor.hpp"
 
 namespace adas
@@ -20,32 +22,37 @@ public:
     void TurnRight() noexcept;
 
 private:
-    // 类实现，将指令封装成类 ===
-    // 定义移动指令类
-    class MoveCommand final
+    // === 接口抽象：定义纯虚基类 ===
+    class ICommand
     {
     public:
-        void DoOperate(ExecutorImpl& executor) const noexcept
+        virtual ~ICommand() = default;
+        virtual void DoOperate(ExecutorImpl& executor) const noexcept = 0;
+    };
+
+    // 继承并实现具体指令
+    class MoveCommand final : public ICommand
+    {
+    public:
+        void DoOperate(ExecutorImpl& executor) const noexcept override
         {
             executor.Move();
         }
     };
 
-    // 定义左转指令类
-    class TurnLeftCommand final
+    class TurnLeftCommand final : public ICommand
     {
     public:
-        void DoOperate(ExecutorImpl& executor) const noexcept
+        void DoOperate(ExecutorImpl& executor) const noexcept override
         {
             executor.TurnLeft();
         }
     };
 
-    // 定义右转指令类
-    class TurnRightCommand final
+    class TurnRightCommand final : public ICommand
     {
     public:
-        void DoOperate(ExecutorImpl& executor) const noexcept
+        void DoOperate(ExecutorImpl& executor) const noexcept override
         {
             executor.TurnRight();
         }

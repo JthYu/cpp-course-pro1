@@ -16,23 +16,23 @@ ExecutorImpl::ExecutorImpl(const Pose& pose) noexcept : pose(pose)
 void ExecutorImpl::Execute(const std::string& commands) noexcept
 {
     for (const auto cmd : commands) {
-        // === 17页：面向对象封装 ===
+        // 统一用父类指针接收
+        std::unique_ptr<ICommand> cmdder;
+
         if (cmd == 'M') {
-            // Move(); // 注释掉原来的直接调用
-            std::unique_ptr<MoveCommand> cmdder = std::make_unique<MoveCommand>();
-            cmdder->DoOperate(*this);
+            cmdder = std::make_unique<MoveCommand>();
         } else if (cmd == 'L') {
-            // TurnLeft();
-            std::unique_ptr<TurnLeftCommand> cmdder = std::make_unique<TurnLeftCommand>();
-            cmdder->DoOperate(*this);
+            cmdder = std::make_unique<TurnLeftCommand>();
         } else if (cmd == 'R') {
-            // TurnRight();
-            std::unique_ptr<TurnRightCommand> cmdder = std::make_unique<TurnRightCommand>();
+            cmdder = std::make_unique<TurnRightCommand>();
+        }
+
+        // === 多态调用：统一执行 ===
+        if (cmdder) {
             cmdder->DoOperate(*this);
         }
     }
 }
-
 // 抽取出的移动逻辑
 void ExecutorImpl::Move() noexcept
 {
