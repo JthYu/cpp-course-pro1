@@ -20,6 +20,7 @@ public:
     void Move() noexcept;
     void TurnLeft() noexcept;
     void TurnRight() noexcept;
+    void Fast() noexcept;
 
 private:
     // === 接口抽象：定义纯虚基类 ===
@@ -58,7 +59,17 @@ private:
         }
     };
 
+    class FastCommand final : public ICommand
+    {
+    public:
+        void DoOperate(ExecutorImpl& executor) const noexcept override
+        {
+            executor.Fast();
+        }
+    };
+
 private:
     Pose pose;
+    bool fast{false};
 };
 }  // namespace adas
