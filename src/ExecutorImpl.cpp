@@ -1,5 +1,7 @@
 #include "ExecutorImpl.hpp"
 
+#include <memory>
+
 namespace adas
 {
 Executor* Executor::NewExecutor(const Pose& pose) noexcept
@@ -14,13 +16,19 @@ ExecutorImpl::ExecutorImpl(const Pose& pose) noexcept : pose(pose)
 void ExecutorImpl::Execute(const std::string& commands) noexcept
 {
     for (const auto cmd : commands) {
-        // 第一步优化：让 Execute 只负责分发指令，不包含具体逻辑
+        // === 17页：面向对象封装 ===
         if (cmd == 'M') {
-            Move();
+            // Move(); // 注释掉原来的直接调用
+            std::unique_ptr<MoveCommand> cmdder = std::make_unique<MoveCommand>();
+            cmdder->DoOperate(*this);
         } else if (cmd == 'L') {
-            TurnLeft();
+            // TurnLeft();
+            std::unique_ptr<TurnLeftCommand> cmdder = std::make_unique<TurnLeftCommand>();
+            cmdder->DoOperate(*this);
         } else if (cmd == 'R') {
-            TurnRight();
+            // TurnRight();
+            std::unique_ptr<TurnRightCommand> cmdder = std::make_unique<TurnRightCommand>();
+            cmdder->DoOperate(*this);
         }
     }
 }
