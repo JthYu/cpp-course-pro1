@@ -37,9 +37,9 @@ TEST(ExecutorFastTest, should_return_S_and_x_plus_1_given_status_is_fast_command
 // 4. 再次收到 F 指令，状态取消，回到普通模式 (N朝向走1步)
 TEST(ExecutorFastTest, should_return_y_plus_1_given_command_is_FFM_and_facing_is_N)
 {
-    std::unique_ptr<Executor> executor(Executor::NewExecutor());
+    std::unique_ptr<Executor> executor(Executor::NewExecutor({0, 0, 'E'}));
     executor->Execute("FFM");  // F加速，F取消，M只走一步
-    const Pose target({0, 1, 'N'});
+    const Pose target({1, 0, 'E'});
     ASSERT_EQ(target, executor->Query());
 }
 

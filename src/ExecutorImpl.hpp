@@ -8,7 +8,8 @@ namespace adas
 class ExecutorImpl final : public Executor
 {
 public:
-    explicit ExecutorImpl(const Pose& pose) noexcept;
+    // 1. 修改构造函数，增加 CarType 参数
+    explicit ExecutorImpl(const Pose& pose, CarType carType) noexcept;
     ~ExecutorImpl() noexcept = default;
 
     ExecutorImpl(const ExecutorImpl&) = delete;
@@ -20,7 +21,9 @@ public:
 
 private:
     PoseHandler poseHandler;
-    // 以前的 Pose, fast 删掉了；如果以前这里有 ICommand 相关的指针或声明，也全删了。
+
+    // 2. 新增成员变量保存车辆类型
+    CarType carType;
 };
 
 }  // namespace adas

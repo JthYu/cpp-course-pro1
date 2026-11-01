@@ -24,7 +24,7 @@ TEST(ExecutorTest, should_return_init_pose_when_without_command)
 TEST(ExecutorTest, should_return_default_pose_when_without_init_and_command)
 {
     // given
-    std::unique_ptr<Executor> executor(Executor::NewExecutor());
+    std::unique_ptr<Executor> executor(Executor::NewExecutor({0, 0, 'N'}));
 
     // when
 
