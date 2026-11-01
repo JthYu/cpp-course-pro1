@@ -2,33 +2,27 @@
 
 namespace adas
 {
+
 PoseHandler::PoseHandler(const Pose& pose) noexcept : pose(pose)
 {
 }
 
+// 删掉 fast 判断，只做基础移动
 void PoseHandler::Move() noexcept
 {
-    int steps = fast ? 2 : 1;
-    for (int i = 0; i < steps; ++i) {
-        if (pose.heading == 'E')
-            ++pose.x;
-        else if (pose.heading == 'W')
-            --pose.x;
-        else if (pose.heading == 'N')
-            ++pose.y;
-        else if (pose.heading == 'S')
-            --pose.y;
-    }
+    if (pose.heading == 'E')
+        ++pose.x;
+    else if (pose.heading == 'W')
+        --pose.x;
+    else if (pose.heading == 'N')
+        ++pose.y;
+    else if (pose.heading == 'S')
+        --pose.y;
 }
 
 void PoseHandler::TurnLeft() noexcept
 {
-    if (fast) {
-        bool temp = fast;
-        fast = false;
-        Move();
-        fast = temp;
-    }
+    // 删掉原本的 if (fast) 那些逻辑，只做左转
     if (pose.heading == 'N')
         pose.heading = 'W';
     else if (pose.heading == 'W')
@@ -41,12 +35,7 @@ void PoseHandler::TurnLeft() noexcept
 
 void PoseHandler::TurnRight() noexcept
 {
-    if (fast) {
-        bool temp = fast;
-        fast = false;
-        Move();
-        fast = temp;
-    }
+    // 删掉原本的 if (fast) 那些逻辑，只做右转
     if (pose.heading == 'N')
         pose.heading = 'E';
     else if (pose.heading == 'E')
@@ -71,4 +60,5 @@ Pose PoseHandler::Query() const noexcept
 {
     return pose;
 }
+
 }  // namespace adas
