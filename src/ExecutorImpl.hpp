@@ -1,4 +1,6 @@
 #pragma once
+#include <string.h>
+
 #include <memory>
 
 #include "Executor.hpp"
@@ -17,56 +19,11 @@ public:
 public:
     void Execute(const std::string& command) noexcept override;
     Pose Query(void) const noexcept override;
-    void Move() noexcept;
-    void TurnLeft() noexcept;
-    void TurnRight() noexcept;
-    void Fast() noexcept;
-
-private:
-    // === 接口抽象：定义纯虚基类 ===
-    class ICommand
-    {
-    public:
-        virtual ~ICommand() = default;
-        virtual void DoOperate(ExecutorImpl& executor) const noexcept = 0;
-    };
-
-    // 继承并实现具体指令
-    class MoveCommand final : public ICommand
-    {
-    public:
-        void DoOperate(ExecutorImpl& executor) const noexcept override
-        {
-            executor.Move();
-        }
-    };
-
-    class TurnLeftCommand final : public ICommand
-    {
-    public:
-        void DoOperate(ExecutorImpl& executor) const noexcept override
-        {
-            executor.TurnLeft();
-        }
-    };
-
-    class TurnRightCommand final : public ICommand
-    {
-    public:
-        void DoOperate(ExecutorImpl& executor) const noexcept override
-        {
-            executor.TurnRight();
-        }
-    };
-
-    class FastCommand final : public ICommand
-    {
-    public:
-        void DoOperate(ExecutorImpl& executor) const noexcept override
-        {
-            executor.Fast();
-        }
-    };
+    void Move(void) noexcept;
+    void TurnLeft(void) noexcept;
+    void TurnRight(void) noexcept;
+    void Fast(void) noexcept;
+    bool IsFast(void) const noexcept;
 
 private:
     Pose pose;
