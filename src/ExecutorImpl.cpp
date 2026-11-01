@@ -1,20 +1,19 @@
 #include "ExecutorImpl.hpp"
 
 #include <memory>
-#include <new>  // 为了 std::nothrow
+#include <new>
+#include <unordered_map>
 
 #include "Command.hpp"
 
 namespace adas
 {
 
-// 🔴 补上这个！测试用例全靠它来创建 Executor 实例
 Executor* Executor::NewExecutor(const Pose& pose) noexcept
 {
     return new (std::nothrow) ExecutorImpl(pose);
 }
 
-// 构造初始化
 ExecutorImpl::ExecutorImpl(const Pose& pose) noexcept : poseHandler(pose)
 {
 }
@@ -24,23 +23,24 @@ Pose ExecutorImpl::Query(void) const noexcept
     return poseHandler.Query();
 }
 
+// 表驱动实现
 void ExecutorImpl::Execute(const std::string& commands) noexcept
 {
+    // 1. 建立指令映射表（将字符映射到对应的指令对象）
+    std::unordered_map<char, std::unique_ptr<ICommand>> cmderMap;
+    cmderMap.emplace('M', std::make_unique<MoveCommand>());
+    cmderMap.emplace('L', std::make_unique<TurnLeftCommand>());
+    cmderMap.emplace('R', std::make_unique<TurnRightCommand>());
+    cmderMap.emplace('F', std::make_unique<FastCommand>());
+
+    // 2. 遍历指令字符串
     for (const auto cmd : commands) {
-        std::unique_ptr<ICommand> cmdder;
+        // 3. 在表中查找当前字符
+        const auto it = cmderMap.find(cmd);
 
-        if (cmd == 'M') {
-            cmdder = std::make_unique<MoveCommand>();
-        } else if (cmd == 'L') {
-            cmdder = std::make_unique<TurnLeftCommand>();
-        } else if (cmd == 'R') {
-            cmdder = std::make_unique<TurnRightCommand>();
-        } else if (cmd == 'F') {
-            cmdder = std::make_unique<FastCommand>();
-        }
-
-        if (cmdder) {
-            cmdder->DoOperate(poseHandler);
+        // 4. 如果找到了对应的指令，就执行
+        if (it != cmderMap.end()) {
+            it->second->DoOperate(poseHandler);
         }
     }
 }
