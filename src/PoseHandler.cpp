@@ -2,48 +2,80 @@
 
 namespace adas
 {
-
 PoseHandler::PoseHandler(const Pose& pose) noexcept : pose(pose)
 {
 }
 
-// 删掉 fast 判断，只做基础移动
 void PoseHandler::Move() noexcept
 {
-    if (pose.heading == 'E')
-        ++pose.x;
-    else if (pose.heading == 'W')
-        --pose.x;
-    else if (pose.heading == 'N')
-        ++pose.y;
-    else if (pose.heading == 'S')
-        --pose.y;
+    // 如果处于倒车状态，移动方向与正常相反
+    if (reverse) {
+        if (pose.heading == 'E')
+            --pose.x;
+        else if (pose.heading == 'W')
+            ++pose.x;
+        else if (pose.heading == 'N')
+            --pose.y;
+        else if (pose.heading == 'S')
+            ++pose.y;
+    } else {
+        if (pose.heading == 'E')
+            ++pose.x;
+        else if (pose.heading == 'W')
+            --pose.x;
+        else if (pose.heading == 'N')
+            ++pose.y;
+        else if (pose.heading == 'S')
+            --pose.y;
+    }
 }
 
 void PoseHandler::TurnLeft() noexcept
 {
-    // 删掉原本的 if (fast) 那些逻辑，只做左转
-    if (pose.heading == 'N')
-        pose.heading = 'W';
-    else if (pose.heading == 'W')
-        pose.heading = 'S';
-    else if (pose.heading == 'S')
-        pose.heading = 'E';
-    else if (pose.heading == 'E')
-        pose.heading = 'N';
+    // 倒车时，L 变成右转
+    if (reverse) {
+        if (pose.heading == 'N')
+            pose.heading = 'E';
+        else if (pose.heading == 'E')
+            pose.heading = 'S';
+        else if (pose.heading == 'S')
+            pose.heading = 'W';
+        else if (pose.heading == 'W')
+            pose.heading = 'N';
+    } else {
+        if (pose.heading == 'N')
+            pose.heading = 'W';
+        else if (pose.heading == 'W')
+            pose.heading = 'S';
+        else if (pose.heading == 'S')
+            pose.heading = 'E';
+        else if (pose.heading == 'E')
+            pose.heading = 'N';
+    }
 }
 
 void PoseHandler::TurnRight() noexcept
 {
-    // 删掉原本的 if (fast) 那些逻辑，只做右转
-    if (pose.heading == 'N')
-        pose.heading = 'E';
-    else if (pose.heading == 'E')
-        pose.heading = 'S';
-    else if (pose.heading == 'S')
-        pose.heading = 'W';
-    else if (pose.heading == 'W')
-        pose.heading = 'N';
+    // 倒车时，R 变成左转
+    if (reverse) {
+        if (pose.heading == 'N')
+            pose.heading = 'W';
+        else if (pose.heading == 'W')
+            pose.heading = 'S';
+        else if (pose.heading == 'S')
+            pose.heading = 'E';
+        else if (pose.heading == 'E')
+            pose.heading = 'N';
+    } else {
+        if (pose.heading == 'N')
+            pose.heading = 'E';
+        else if (pose.heading == 'E')
+            pose.heading = 'S';
+        else if (pose.heading == 'S')
+            pose.heading = 'W';
+        else if (pose.heading == 'W')
+            pose.heading = 'N';
+    }
 }
 
 void PoseHandler::Fast() noexcept
@@ -56,9 +88,18 @@ bool PoseHandler::IsFast() const noexcept
     return fast;
 }
 
+void PoseHandler::Reverse() noexcept
+{
+    reverse = !reverse;
+}
+
+bool PoseHandler::IsReverse() const noexcept
+{
+    return reverse;
+}
+
 Pose PoseHandler::Query() const noexcept
 {
     return pose;
 }
-
 }  // namespace adas

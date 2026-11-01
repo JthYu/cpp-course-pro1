@@ -42,6 +42,9 @@ void ExecutorImpl::Execute(const std::string& commands) noexcept
     FastCommand fastCommand;
     cmderMap.emplace('F', fastCommand.operate);
 
+    ReverseCommand reverseCommand;
+    cmderMap.emplace('B', reverseCommand.operate);
+
     for (const auto cmd : commands) {
         const auto it = cmderMap.find(cmd);
         if (it != cmderMap.end()) {
