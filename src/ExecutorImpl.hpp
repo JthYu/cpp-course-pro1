@@ -1,32 +1,20 @@
 #pragma once
-#include <string.h>
-
-#include <memory>
-
 #include "Executor.hpp"
+#include "PoseHandler.hpp"  // 必须有
 
 namespace adas
 {
+
 class ExecutorImpl final : public Executor
 {
 public:
     explicit ExecutorImpl(const Pose& pose) noexcept;
-    ~ExecutorImpl() noexcept = default;
 
-    ExecutorImpl(const ExecutorImpl&) = delete;
-    ExecutorImpl& operator=(const ExecutorImpl&) = delete;
-
-public:
     void Execute(const std::string& command) noexcept override;
     Pose Query(void) const noexcept override;
-    void Move(void) noexcept;
-    void TurnLeft(void) noexcept;
-    void TurnRight(void) noexcept;
-    void Fast(void) noexcept;
-    bool IsFast(void) const noexcept;
 
 private:
-    Pose pose;
-    bool fast{false};
+    PoseHandler poseHandler;  // 替换掉原先的私有变量
 };
+
 }  // namespace adas

@@ -1,16 +1,27 @@
 #include "ExecutorImpl.hpp"
 
+#include <memory>
+#include <new>  // 为了 std::nothrow
+
 #include "Command.hpp"
 
 namespace adas
 {
+
+// 🔴 补上这个！测试用例全靠它来创建 Executor 实例
 Executor* Executor::NewExecutor(const Pose& pose) noexcept
 {
     return new (std::nothrow) ExecutorImpl(pose);
 }
 
-ExecutorImpl::ExecutorImpl(const Pose& pose) noexcept : pose(pose)
+// 构造初始化
+ExecutorImpl::ExecutorImpl(const Pose& pose) noexcept : poseHandler(pose)
 {
+}
+
+Pose ExecutorImpl::Query(void) const noexcept
+{
+    return poseHandler.Query();
 }
 
 void ExecutorImpl::Execute(const std::string& commands) noexcept
@@ -24,83 +35,14 @@ void ExecutorImpl::Execute(const std::string& commands) noexcept
             cmdder = std::make_unique<TurnLeftCommand>();
         } else if (cmd == 'R') {
             cmdder = std::make_unique<TurnRightCommand>();
-        } else if (cmd == 'F') {  // 新增 F 指令
+        } else if (cmd == 'F') {
             cmdder = std::make_unique<FastCommand>();
         }
 
         if (cmdder) {
-            cmdder->DoOperate(*this);
+            cmdder->DoOperate(poseHandler);
         }
     }
 }
 
-// 切换加速状态
-void ExecutorImpl::Fast() noexcept
-{
-    fast = !fast;
-}
-
-void ExecutorImpl::Move() noexcept
-{
-    // 如果处于加速状态，走2步，否则走1步
-    int steps = fast ? 2 : 1;
-    for (int i = 0; i < steps; ++i) {
-        if (pose.heading == 'E') {
-            ++pose.x;
-        } else if (pose.heading == 'W') {
-            --pose.x;
-        } else if (pose.heading == 'N') {
-            ++pose.y;
-        } else if (pose.heading == 'S') {
-            --pose.y;
-        }
-    }
-}
-
-void ExecutorImpl::TurnLeft() noexcept
-{
-    // 加速状态下，先往前走一步（不管朝向怎么转，转向之前的位置是固定的）
-    if (fast) {
-        fast = false;  // 暂时关闭加速，借用 Move 走1步
-        Move();
-        fast = true;  // 恢复加速状态
-    }
-
-    // 执行左转
-    if (pose.heading == 'N') {
-        pose.heading = 'W';
-    } else if (pose.heading == 'W') {
-        pose.heading = 'S';
-    } else if (pose.heading == 'S') {
-        pose.heading = 'E';
-    } else if (pose.heading == 'E') {
-        pose.heading = 'N';
-    }
-}
-
-void ExecutorImpl::TurnRight() noexcept
-{
-    // 加速状态下，先往前走一步
-    if (fast) {
-        fast = false;
-        Move();
-        fast = true;
-    }
-
-    // 执行右转
-    if (pose.heading == 'N') {
-        pose.heading = 'E';
-    } else if (pose.heading == 'E') {
-        pose.heading = 'S';
-    } else if (pose.heading == 'S') {
-        pose.heading = 'W';
-    } else if (pose.heading == 'W') {
-        pose.heading = 'N';
-    }
-}
-
-Pose ExecutorImpl::Query() const noexcept
-{
-    return pose;
-}
 }  // namespace adas
